@@ -1,6 +1,9 @@
 //use std::io::{self, Write};
 use colorful::{Color, Colorful};
 use clap::{Parser, Subcommand};
+mod port_scanner;
+use port_scanner::port_scanner;
+use port_scanner::PortStatus;
 
 
 
@@ -35,9 +38,6 @@ enum Commands {
 }
 
 
-
-
-
 // the magical loop
 //
 // for testing use -> cargo run -- scan (port) (ip)
@@ -49,8 +49,14 @@ fn main ()
 
     match cli.command {
     
-        Commands::Scan {p, ip} => {
+        Commands::Scan {p, ip} => 
+        {
             println!("Scanning target {ip} on port {p}...");
+            match port_scanner(&ip, p) {
+                PortStatus::Open => println!("Port {p} is OPEN"),
+                PortStatus::Timeout => println!("Port {p} timed out"),
+                PortStatus::Closed => println!("Port {p} is CLOSED"),
+            }
         }
 
     }
