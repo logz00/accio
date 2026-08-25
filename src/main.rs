@@ -1,24 +1,11 @@
 //use std::io::{self, Write};
-use colorful::{Color, Colorful};
 use clap::{Parser, Subcommand};
 mod port_scanner;
 use port_scanner::port_scanner;
 use port_scanner::PortStatus;
+mod logo;
+use logo::main_logo;
 
-
-
-fn main_logo() 
-{
-    let logo = r#"    _            _         _             _                    
-   / \   ___ ___(_) ___   | |__  _   _  | |    ___   __ _ ____
-  / _ \ / __/ __| |/ _ \  | '_ \| | | | | |   / _ \ / _` |_  /
- / ___ \ (_| (__| | (_) | | |_) | |_| | | |__| (_) | (_| |/ / 
-/_/   \_\___\___|_|\___/  |_.__/ \__, | |_____\___/ \__, /___|
-                                 |___/              |___/     
-Welcome to the Accio Recon Tool || Creator: github.com/logz00"#;
-
-    println!("{}", logo.gradient(Color::SeaGreen3).bold());
-}
 
 
 // command line setup to be cool
@@ -38,10 +25,11 @@ enum Commands {
 }
 
 
-// the magical loop
+// magical main loop using tokio
 //
 // for testing use -> cargo run -- scan (port) (ip)
-fn main () 
+#[tokio::main]
+async fn main () 
 {
     main_logo();
     
@@ -51,11 +39,14 @@ fn main ()
     
         Commands::Scan {p, ip} => 
         {
-            println!("Scanning target {ip} on port {p}...");
-            match port_scanner(&ip, p) {
-                PortStatus::Open => println!("Port {p} is OPEN"),
-                PortStatus::Timeout => println!("Port {p} timed out"),
-                PortStatus::Closed => println!("Port {p} is CLOSED"),
+            println!("Scanning target {ip} on port >> {p}...\n");
+
+            match port_scanner(ip, p).await
+            {
+                PortStatus::Open => println!("Port {p} is OPEN\n"),
+                PortStatus::Timeout => println!("Port {p} timed out\n"),
+                PortStatus::Closed => println!("Port {p} is CLOSED\n"),
+                PortStatus::InvalidAddress => println!("Invalid IP Address Format\n"),
             }
         }
 
