@@ -21,6 +21,9 @@ enum Commands {
     Scan {
         p: u16,
         ip: String,
+    },
+    Fullscan {
+        ip: String,
     }
 }
 
@@ -39,13 +42,13 @@ async fn main ()
     
         Commands::Scan {p, ip} => 
         {
-            println!("Scanning target {ip} on port >> {p}...\n");
+            println!("Scanning {ip} on Port {p}...\n");
 
             match port_scanner(ip, p).await
             {
-                PortStatus::Open => println!("Port {p} is OPEN\n"),
-                PortStatus::Timeout => println!("Port {p} timed out\n"),
-                PortStatus::Closed => println!("Port {p} is CLOSED\n"),
+                PortStatus::Open => println!("[🟢] Port {p} >> OPEN\n"),
+                PortStatus::Timeout => println!("[🟡] Port {p} >> TIMEOUT\n"),
+                PortStatus::Closed => println!("[🔴] Port {p} >> CLOSED\n"),
                 PortStatus::InvalidAddress => println!("Invalid IP Address Format\n"),
             }
         }
