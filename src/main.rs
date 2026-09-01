@@ -32,7 +32,7 @@ enum Commands {
 //
 // for testing use -> cargo run -- scan (port) (ip)
 #[tokio::main]
-async fn main () 
+async fn main()
 {
     main_logo();
     
@@ -42,16 +42,22 @@ async fn main ()
     
         Commands::Scan {p, ip} => 
         {
-            println!("Scanning {ip} on Port {p}...\n");
+            println!("[*] Scanning {ip} on Port {p}...\n");
 
             match port_scanner(ip, p).await
             {
-                PortStatus::Open => println!("[🟢] Port {p} >> OPEN\n"),
+                PortStatus::Open => println!("[🟢] Port {p} => OPEN\n"),
                 PortStatus::Timeout => println!("[🟡] Port {p} >> TIMEOUT\n"),
                 PortStatus::Closed => println!("[🔴] Port {p} >> CLOSED\n"),
                 PortStatus::InvalidAddress => println!("Invalid IP Address Format\n"),
             }
         }
+        
+        Commands::Fullscan {ip} => 
+        {
+            println!("[*] Scanning {ip} for Open Ports...\n")
 
+                //match
+        }
     }
 }
