@@ -5,6 +5,8 @@ use port_scanner::port_scanner;
 use port_scanner::PortStatus;
 mod logo;
 use logo::main_logo;
+mod full_portscan;
+use full_portscan::full_port_scan;
 
 
 
@@ -46,18 +48,23 @@ async fn main()
 
             match port_scanner(ip, p).await
             {
-                PortStatus::Open => println!("[🟢] Port {p} => OPEN\n"),
-                PortStatus::Timeout => println!("[🟡] Port {p} >> TIMEOUT\n"),
-                PortStatus::Closed => println!("[🔴] Port {p} >> CLOSED\n"),
+                PortStatus::Open => println!("Port {p} => OPEN [🟢]\n"),
+                PortStatus::Timeout => println!("Port {p} => TIMEOUT [🟡]\n"),
+                PortStatus::Closed => println!("Port {p} => CLOSED [🔴]\n"),
                 PortStatus::InvalidAddress => println!("Invalid IP Address Format\n"),
             }
         }
         
         Commands::Fullscan {ip} => 
         {
-            println!("[*] Scanning {ip} for Open Ports...\n")
+            println!("[*] Scanning {ip} for Open Ports...\n");
 
-                //match
+            let open_ports = full_port_scan(ip).await;
+            
+            for port in open_ports
+            {
+                print!("Port {port} => OPEN [🟢]\n");
+            }
         }
     }
 }

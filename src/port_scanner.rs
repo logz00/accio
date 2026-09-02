@@ -30,7 +30,6 @@ pub async fn port_scanner(ip: String, port: u16) -> PortStatus
 
 }
 
-// pub async fn full_port_scan
 
 
 
