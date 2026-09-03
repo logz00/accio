@@ -1,4 +1,3 @@
-//use std::io::{self, Write};
 use clap::{Parser, Subcommand};
 mod port_scanner;
 use port_scanner::port_scanner;
@@ -7,7 +6,7 @@ mod logo;
 use logo::main_logo;
 mod full_portscan;
 use full_portscan::full_port_scan;
-
+use std::time::Instant;
 
 
 // command line setup to be cool
@@ -57,14 +56,20 @@ async fn main()
         
         Commands::Fullscan {ip} => 
         {
-            println!("[*] Scanning {ip} for Open Ports...\n");
+            // track time
+            let start = Instant::now();
+            println!("\x1b[3m[*] Scanning {ip} for Open Ports...\x1b[0m\n");
 
             let open_ports = full_port_scan(ip).await;
-            
+
             for port in open_ports
             {
                 print!("Port {port} => OPEN [🟢]\n");
             }
+            let elapsed = start.elapsed();
+
+            let timer = format!("{:?}", elapsed);
+            println!("\n\x1b[3m[!] Process finished in {:.4} seconds.\x1b[0m", timer);
         }
     }
 }
